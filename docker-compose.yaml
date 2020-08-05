@@ -1,0 +1,33 @@
+version: '3.3'
+
+services:
+  http:
+    image: mcr.microsoft.com/dotnet/core/sdk:3.1
+    command: bash -c "dotnet restore Irradiate.sln && dotnet build Irradiate.sln && dotnet run --project Irradiate.Tests/Irradiate.Tests.csproj"
+    working_dir: /src
+    volumes:
+      - .:/src
+    ports:
+      - "5000:5000"
+    environment:
+      - AWS_XRAY_DAEMON_ADDRESS="xray:2000"
+    depends_on:
+      - xray
+
+  benchmark:
+    image: mcr.microsoft.com/dotnet/core/sdk:3.1
+    command: dotnet run -c Release --project Irradiate.Tests/Irradiate.Tests.csproj benchmark
+    working_dir: /src
+    volumes:
+      - .:/src
+
+  xray:
+    image: amazon/aws-xray-daemon
+    command: -o
+    ports:
+      - 2000:2000
+      - 2000:2000/udp
+    volumes:
+      - ${USERPROFILE-~}/.aws/credentials:/root/.aws/credentials:ro
+    environment:
+      - AWS_REGION=us-east-1
