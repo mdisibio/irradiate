@@ -20,7 +20,7 @@
   </PropertyGroup>
     
   <ItemGroup>
-    <ProjectReference Include="..\Irradiate\irradiate.csproj" />
+    <ProjectReference Include="..\Irradiate\Irradiate.csproj" />
   </ItemGroup>
     
   <ItemGroup>
