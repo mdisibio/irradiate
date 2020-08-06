@@ -82,5 +82,18 @@ namespace Irradiate.Tests
             Assert.Equal("7", r.Subsegments[0].MetaData["args.y"]);
             Assert.Equal("35", r.Subsegments[0].MetaData["result"]);
         }
+
+        [Fact]
+        public void Test_Options()
+        {
+            var services = new ServiceCollection()
+                .AddSingleton<IThing>(new Thing())
+                .Irradiate<IThing>(c => c.ExcludeMethod(nameof(IThing.Void)))
+                .BuildServiceProvider();
+
+            var proxy = (XrayProxy)services.GetRequiredService<IThing>();
+
+            Assert.Equal("Void", proxy.Options.ExcludedMethodsByName[0]);
+        }
     }
 }

@@ -11,7 +11,7 @@ namespace Irradiate
     {
         object _instance;
         IAWSXRayRecorder _recorder;
-        Options _options;
+        public Options Options { get; private set; }
 
         static readonly MethodInfo _handleResultTaskT = typeof(XrayProxy).GetRuntimeMethods()
                                 .Where(m => m.Name == nameof(handleTaskT) && m.IsGenericMethod)
@@ -23,7 +23,7 @@ namespace Irradiate
         {
             _instance = instance;
             _recorder = recorder;
-            _options = options;
+            Options = options;
         }
 
         protected override object Invoke(MethodInfo m, object[] args)
@@ -68,7 +68,7 @@ namespace Irradiate
         bool shouldTrace(MethodInfo m)
         {
             return _recorder.TraceContext.IsEntityPresent() &&
-                    !_options.ExcludedMethodsByName.Contains(m.Name);
+                    !Options.ExcludedMethodsByName.Contains(m.Name);
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace Irradiate
 
                 _recorder.AddMetadata("args." + param.Name, val.ToString());
 
-                if (_options.AnnotatedArgumentsByName.Contains(param.Name))
+                if (Options.AnnotatedArgumentsByName.Contains(param.Name))
                 {
                     _recorder.AddAnnotation(param.Name, val.ToString());
                 }
