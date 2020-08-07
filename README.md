@@ -2,7 +2,7 @@
 Irradiate is a library to easily add AWS X-Ray tracing to any .NET interface using [DispatchProxy](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.dispatchproxy).  Subsegments are captured at the method level and record arguments, return values, exceptions, and timings. Irradiate handles async methods and ends the subsegment when the task is complete.
 
 ![CI](https://github.com/mdisibio/irradiate/workflows/.NET%20Core/badge.svg)
-[![Coverage Status](https://coveralls.io/repos/github/mdisibio/irradiate/badge.svg?branch=coverage-report)](https://coveralls.io/github/mdisibio/irradiate?branch=coverage-report)
+[![Coverage Status](https://coveralls.io/repos/github/mdisibio/irradiate/badge.svg?branch=master)](https://coveralls.io/github/mdisibio/irradiate?branch=master)
 
 ## Usage
 Irradiate can only operate against an `interface` due to the underlying usage of DispatchProxy.  Therefore plain classes cannot be proxied unless an interface is first extracted from it. 
