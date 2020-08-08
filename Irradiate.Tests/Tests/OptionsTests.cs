@@ -1,7 +1,6 @@
-﻿using System;
-using Xunit;
+﻿using Xunit;
 
-namespace Irradiate.Tests.Tests
+namespace Irradiate.Tests
 {
     public class OptionsTests
     {
