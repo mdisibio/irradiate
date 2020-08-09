@@ -54,14 +54,7 @@ namespace Irradiate
                                 p.GetService<IAWSXRayRecorder>(),
                                 options);
                         
-                    }
-                    else if (reg.ImplementationInstance != null)
-                    {
-                        factory = p => global::Irradiate.Irradiate.ProxyInstance(
-                                (T)reg.ImplementationInstance,
-                                p.GetService<IAWSXRayRecorder>(),
-                                options);
-                    }
+                    }                    
                     else if (reg.ImplementationType != null)
                     {
                         // Ensure underlying type is registered or else
@@ -75,7 +68,10 @@ namespace Irradiate
                     }
                     else
                     {
-                        throw new InvalidOperationException($"Registration for type {typeof(T).Name} is of an unhandled type. I don't know what to do with it.");
+                        factory = p => global::Irradiate.Irradiate.ProxyInstance(
+                                (T)reg.ImplementationInstance,
+                                p.GetService<IAWSXRayRecorder>(),
+                                options);
                     }
 
                     services[i] = new ServiceDescriptor(typeof(T), factory, reg.Lifetime);

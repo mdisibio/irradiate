@@ -127,12 +127,13 @@ namespace Irradiate
 
         void logTask(Task t)
         {
-            logException(t.Exception);
+            logException(t.Exception);           
+        }
 
-            if (t.GetType().IsGenericType)
-            {
-                logResult(((dynamic)t).Result);
-            }
+        void logTask<T>(Task<T> t)
+        {
+            logException(t.Exception);
+            logResult(t.Result);
         }
 
         void logArgs(MethodInfo m, object[] args)

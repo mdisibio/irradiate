@@ -25,6 +25,28 @@ namespace Irradiate.Tests
         }
 
         [Fact]
+        public async Task Test_VoidAsync()
+        {
+            var (r, i) = setup();
+
+            await i.VoidAsync();
+
+            Assert.Single(r.Subsegments);
+            Assert.Empty(r.Subsegments[0].MetaData.Keys);
+        }
+
+        [Fact]
+        public async Task Test_VoidAsyncDelayed()
+        {
+            var (r, i) = setup();
+
+            await i.VoidAsyncDelayed();
+
+            Assert.Single(r.Subsegments);
+            Assert.Empty(r.Subsegments[0].MetaData.Keys);
+        }
+
+        [Fact]
         public void Test_FuncParams()
         {
             var (r, i) = setup();

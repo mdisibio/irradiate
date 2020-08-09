@@ -1,4 +1,5 @@
-﻿using Amazon.XRay.Recorder.Core;
+﻿using System;
+using Amazon.XRay.Recorder.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -81,6 +82,14 @@ namespace Irradiate.Tests
             Assert.Equal("5", r.Subsegments[0].MetaData["args.x"]);
             Assert.Equal("7", r.Subsegments[0].MetaData["args.y"]);
             Assert.Equal("35", r.Subsegments[0].MetaData["result"]);
+        }
+
+        [Fact]
+        public void Test_UnknownInterface()
+        {
+            Assert.Throws<InvalidOperationException>(() =>
+                new ServiceCollection()
+                    .Irradiate<IThing>());
         }
 
         [Fact]
