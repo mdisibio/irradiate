@@ -140,16 +140,29 @@ namespace Irradiate
         {
             for (int i = 0; i < args.Length; i++)
             {
-                var val = args[i];
+                var val = convertArg(args[i]);
                 var param = m.GetParameters()[i];
 
-                _recorder.AddMetadata("args." + param.Name, val.ToString());
+                _recorder.AddMetadata("args." + param.Name, val);
 
-                if (Options.AnnotatedArgumentsByName.Contains(param.Name))
+                if (val != null && Options.AnnotatedArgumentsByName.Contains(param.Name))
                 {
-                    _recorder.AddAnnotation(param.Name, val.ToString());
+                    _recorder.AddAnnotation(param.Name, val);
                 }
             }
+        }
+       
+        object convertArg(object arg)
+        {
+            // Preserve value for known types.
+            // Otherwise convert to string.
+            if (arg is int ||
+                arg is long ||
+                arg is double ||
+                arg is bool)
+                return arg;
+
+            return arg?.ToString();
         }
 
         void logException(Exception e)
@@ -162,7 +175,7 @@ namespace Irradiate
 
         void logResult(object o)
         {
-            _recorder.AddMetadata("result", o?.ToString() ?? "null");
+            _recorder.AddMetadata("result", convertArg(o) ?? "null");
         }
     }
 }

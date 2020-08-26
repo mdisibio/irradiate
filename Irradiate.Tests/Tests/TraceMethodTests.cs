@@ -54,9 +54,9 @@ namespace Irradiate.Tests
             i.FuncParams(3, 5);
 
             Assert.Single(r.Subsegments);
-            Assert.Equal("3", r.Subsegments[0].MetaData["args.x"]);
-            Assert.Equal("5", r.Subsegments[0].MetaData["args.y"]);
-            Assert.Equal("15", r.Subsegments[0].MetaData["result"]);
+            Assert.Equal(3, r.Subsegments[0].MetaData["args.x"]);
+            Assert.Equal(5, r.Subsegments[0].MetaData["args.y"]);
+            Assert.Equal(15, r.Subsegments[0].MetaData["result"]);
         }
 
         [Fact]
@@ -67,9 +67,9 @@ namespace Irradiate.Tests
             await i.FuncParamsAsync(3, 5);
 
             Assert.Single(r.Subsegments);
-            Assert.Equal("3", r.Subsegments[0].MetaData["args.x"]);
-            Assert.Equal("5", r.Subsegments[0].MetaData["args.y"]);
-            Assert.Equal("15", r.Subsegments[0].MetaData["result"]);
+            Assert.Equal(3, r.Subsegments[0].MetaData["args.x"]);
+            Assert.Equal(5, r.Subsegments[0].MetaData["args.y"]);
+            Assert.Equal(15, r.Subsegments[0].MetaData["result"]);
         }
 
         [Fact]
@@ -80,9 +80,9 @@ namespace Irradiate.Tests
             await i.FuncParamsAsyncDelayed(3, 5);
 
             Assert.Single(r.Subsegments);
-            Assert.Equal("3", r.Subsegments[0].MetaData["args.x"]);
-            Assert.Equal("5", r.Subsegments[0].MetaData["args.y"]);
-            Assert.Equal("15", r.Subsegments[0].MetaData["result"]);
+            Assert.Equal(3, r.Subsegments[0].MetaData["args.x"]);
+            Assert.Equal(5, r.Subsegments[0].MetaData["args.y"]);
+            Assert.Equal(15, r.Subsegments[0].MetaData["result"]);
         }
 
         [Fact]

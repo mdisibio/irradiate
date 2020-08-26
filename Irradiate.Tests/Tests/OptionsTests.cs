@@ -52,7 +52,7 @@ namespace Irradiate.Tests
             i.VoidParams(3, 5);
 
             Assert.Single(r.Subsegments[0].Annotations.Keys);
-            Assert.Equal("3", r.Subsegments[0].Annotations["x"]);            
+            Assert.Equal(3, r.Subsegments[0].Annotations["x"]);            
         }
     }
 }

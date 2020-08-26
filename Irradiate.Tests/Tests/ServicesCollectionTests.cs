@@ -21,9 +21,9 @@ namespace Irradiate.Tests
             services.GetRequiredService<IThing>().FuncParams(5, 7);
 
             Assert.Single(r.Subsegments);
-            Assert.Equal("5", r.Subsegments[0].MetaData["args.x"]);
-            Assert.Equal("7", r.Subsegments[0].MetaData["args.y"]);
-            Assert.Equal("35", r.Subsegments[0].MetaData["result"]);
+            Assert.Equal(5, r.Subsegments[0].MetaData["args.x"]);
+            Assert.Equal(7, r.Subsegments[0].MetaData["args.y"]);
+            Assert.Equal(35, r.Subsegments[0].MetaData["result"]);
         }
 
         [Fact]
@@ -41,9 +41,9 @@ namespace Irradiate.Tests
             services.GetRequiredService<IThing>().FuncParams(5, 7);
 
             Assert.Single(r.Subsegments);
-            Assert.Equal("5", r.Subsegments[0].MetaData["args.x"]);
-            Assert.Equal("7", r.Subsegments[0].MetaData["args.y"]);
-            Assert.Equal("35", r.Subsegments[0].MetaData["result"]);
+            Assert.Equal(5, r.Subsegments[0].MetaData["args.x"]);
+            Assert.Equal(7, r.Subsegments[0].MetaData["args.y"]);
+            Assert.Equal(35, r.Subsegments[0].MetaData["result"]);
         }
 
         [Fact]
@@ -60,9 +60,9 @@ namespace Irradiate.Tests
             services.GetRequiredService<IThing>().FuncParams(5, 7);
 
             Assert.Single(r.Subsegments);
-            Assert.Equal("5", r.Subsegments[0].MetaData["args.x"]);
-            Assert.Equal("7", r.Subsegments[0].MetaData["args.y"]);
-            Assert.Equal("35", r.Subsegments[0].MetaData["result"]);
+            Assert.Equal(5, r.Subsegments[0].MetaData["args.x"]);
+            Assert.Equal(7, r.Subsegments[0].MetaData["args.y"]);
+            Assert.Equal(35, r.Subsegments[0].MetaData["result"]);
         }
 
         [Fact]
@@ -79,9 +79,9 @@ namespace Irradiate.Tests
             services.GetRequiredService<IThing>().FuncParams(5, 7);
 
             Assert.Single(r.Subsegments);
-            Assert.Equal("5", r.Subsegments[0].MetaData["args.x"]);
-            Assert.Equal("7", r.Subsegments[0].MetaData["args.y"]);
-            Assert.Equal("35", r.Subsegments[0].MetaData["result"]);
+            Assert.Equal(5, r.Subsegments[0].MetaData["args.x"]);
+            Assert.Equal(7, r.Subsegments[0].MetaData["args.y"]);
+            Assert.Equal(35, r.Subsegments[0].MetaData["result"]);
         }
 
         [Fact]
