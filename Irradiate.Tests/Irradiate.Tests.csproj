@@ -32,4 +32,8 @@
         <PackageReference Include="coverlet.msbuild" Version="2.9.0" />
   </ItemGroup>
   
+  <ItemGroup>
+    <None Remove="BenchmarkDotNet.Artifacts/**" />
+    <None Remove="TestResults/**" />
+  </ItemGroup>
 </Project>
