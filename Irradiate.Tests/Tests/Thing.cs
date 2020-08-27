@@ -7,6 +7,7 @@ namespace Irradiate.Tests
     {
         void Void();
         void VoidParams(int x, int y);
+        void VoidParamsNullable(string s);
         Task VoidAsync();
         Task VoidAsyncDelayed();
         int FuncParams(int x, int y);
@@ -19,6 +20,7 @@ namespace Irradiate.Tests
     {
         public void Void() { }
         public void VoidParams(int x, int y) { }
+        public void VoidParamsNullable(string s) { }
         public Task VoidAsync() => Task.CompletedTask;
         public async Task VoidAsyncDelayed()
         {

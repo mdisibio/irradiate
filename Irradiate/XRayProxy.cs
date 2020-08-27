@@ -154,15 +154,25 @@ namespace Irradiate
        
         object convertArg(object arg)
         {
-            // Preserve value for known types.
-            // Otherwise convert to string.
+            if (arg == null)
+                return null;
+
+            // Custom
+            Func<object, object> custom;
+            if (Options.TypeFormatters.TryGetValue(arg.GetType(), out custom))
+            {
+                return custom(arg);
+            }
+
+            // Natively supported by xray
             if (arg is int ||
                 arg is long ||
                 arg is double ||
                 arg is bool)
                 return arg;
 
-            return arg?.ToString();
+            // Fallback
+            return arg.ToString();
         }
 
         void logException(Exception e)

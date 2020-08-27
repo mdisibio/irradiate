@@ -9,7 +9,18 @@ namespace Irradiate
     {
         public HashSet<string> AnnotatedArgumentsByName { get; private set;} = new HashSet<string>();
         public List<string> ExcludedMethodsByName { get; private set; } = new List<string>();
+        public Dictionary<Type, Func<object, object>> TypeFormatters { get; private set; } = new Dictionary<Type, Func<object, object>>();
 
+        public Options AddTypeFormatter<T>(Func<T, object> f)
+        {
+            return AddTypeFormatter(typeof(T), (object o) => f((T)o));
+        }
+
+        public Options AddTypeFormatter(Type t, Func<object, object> f)
+        {
+            TypeFormatters[t] = f;
+            return this;
+        }
 
         public Options AnnotateArgument(string name)
         {

@@ -54,5 +54,34 @@ namespace Irradiate.Tests
             Assert.Single(r.Subsegments[0].Annotations.Keys);
             Assert.Equal(3, r.Subsegments[0].Annotations["x"]);            
         }
+
+        [Fact]
+        public void CustomTypeFormatter()
+        {
+            var r = new TestRecorder();
+            var i = Irradiate.ProxyInstance<IThing>(new Thing(), r,
+                        new Options()
+                            .AnnotateArgument("x")
+                            .AddTypeFormatter<int>(i => "int" + i.ToString()));
+
+            i.VoidParams(3, 5);
+
+            Assert.Single(r.Subsegments[0].Annotations.Keys);
+            Assert.Equal("int3", r.Subsegments[0].Annotations["x"]);
+            Assert.Equal("int3", r.Subsegments[0].MetaData["args.x"]);
+        }
+
+        [Fact]
+        public void AnnotateIgnoresNull()
+        {
+            var r = new TestRecorder();
+            var i = Irradiate.ProxyInstance<IThing>(new Thing(), r,
+                        new Options().AnnotateArgument("s"));
+
+            i.VoidParamsNullable(null);
+
+            Assert.Empty(r.Subsegments[0].Annotations.Keys);
+            Assert.Null(r.Subsegments[0].MetaData["args.s"]);
+        }
     }
 }
