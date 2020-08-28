@@ -12,7 +12,8 @@ namespace Irradiate.Tests
 {
     public class TestContext : ITraceContext
     {
-        public bool IsEntityPresent() => true;
+        public bool _IsEntityPresent { get; set; } = true;
+        public bool IsEntityPresent() => _IsEntityPresent;
 
         public void ClearEntity() => throw new NotImplementedException();
         public Entity GetEntity() => throw new NotImplementedException();
@@ -35,8 +36,9 @@ namespace Irradiate.Tests
     {
         public List<TestSubsegment> Subsegments = new List<TestSubsegment>();
         public TestSubsegment CurrentSubsegment = null;
-
         public ITraceContext TraceContext { get; set; } = new TestContext();
+
+        public bool IsEntityPresent { set { ((TestContext)TraceContext)._IsEntityPresent = value; } }
 
         public void AddAnnotation(string key, object value)
         {

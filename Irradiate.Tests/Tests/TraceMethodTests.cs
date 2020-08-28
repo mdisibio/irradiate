@@ -24,6 +24,20 @@ namespace Irradiate.Tests
             Assert.Equal("null", r.Subsegments[0].MetaData["result"]);
         }
 
+      
+        [Theory]
+        [InlineData(null)]
+        [InlineData("string")]
+        public void Test_VoidParamsNullable(string s)
+        {
+            var (r, i) = setup();
+
+            i.VoidParamsNullable(s);
+
+            Assert.Single(r.Subsegments);
+            Assert.Equal(s, r.Subsegments[0].MetaData["args.s"]);
+        }        
+
         [Fact]
         public async Task Test_VoidAsync()
         {
@@ -94,6 +108,17 @@ namespace Irradiate.Tests
 
             Assert.Single(r.Subsegments);
             Assert.Single(r.Subsegments[0].Exceptions);
+        }
+
+        [Fact]
+        public void Test_NoTracing()
+        {
+            var (r, i) = setup();
+            r.IsEntityPresent = false;
+
+            i.Void();
+
+            Assert.Empty(r.Subsegments);
         }
     }
 }
