@@ -5,25 +5,29 @@ namespace Irradiate.Tests
 {
     public class OptionsTests
     {
+        (TestRecorder, IThing) setup(Options o = null)
+        {
+            var r = new TestRecorder();
+            var i = Irradiate.ProxyInstance<IThing>(new Thing(), r, o);
+            return (r, i);
+        }
+
         [Fact]
         public void NoExludedMethods()
         {
-            var r = new TestRecorder();
-            var i = Irradiate.ProxyInstance<IThing>(new Thing(), r);
+            var (r, i) = setup();
 
             i.Void();
             i.VoidParams(3, 5);
 
             Assert.Equal(2, r.Subsegments.Count);
-            
         }
 
         [Fact]
         public void ExcludeMethodByName()
         {
-            var r = new TestRecorder();
-            var i = Irradiate.ProxyInstance<IThing>(new Thing(), r,
-                        new Options().ExcludeMethod(nameof(IThing.Void)));
+            var (r, i) = setup(new Options()
+                                .ExcludeMethod(nameof(IThing.Void)));
 
             i.Void();
             i.VoidParams(3, 5);
@@ -35,8 +39,7 @@ namespace Irradiate.Tests
         [Fact]
         public void NoAnnotations()
         {
-            var r = new TestRecorder();
-            var i = Irradiate.ProxyInstance<IThing>(new Thing(), r);
+            var (r, i) = setup();
 
             i.VoidParams(3, 5);
 
@@ -46,9 +49,7 @@ namespace Irradiate.Tests
         [Fact]
         public void AnnotateArgumentsByName()
         {
-            var r = new TestRecorder();
-            var i = Irradiate.ProxyInstance<IThing>(new Thing(), r,
-                        new Options().AnnotateArgument("x"));
+            var (r, i) = setup(new Options().Annotate("x"));
 
             i.VoidParams(3, 5);
 
@@ -57,12 +58,23 @@ namespace Irradiate.Tests
         }
 
         [Fact]
+        public void AnnotateArgumentsByType()
+        {
+            var (r, i) = setup(new Options()
+                            .Annotate<string>(s => Tuple.Create((object)s.ToUpper(), "name")));
+
+            i.VoidParamsNullable("string");
+
+            Assert.Single(r.Subsegments[0].Annotations.Keys);
+            Assert.Equal("STRING", r.Subsegments[0].Annotations["name"]);
+        }
+
+
+        [Fact]
         public void CustomTypeFormatter()
         {
-            var r = new TestRecorder();
-            var i = Irradiate.ProxyInstance<IThing>(new Thing(), r,
-                        new Options()
-                            .AnnotateArgument("x")
+           var (r, i) = setup(new Options()
+                            .Annotate("x")
                             .AddTypeFormatter<int>(i => "int" + i.ToString()));
 
             i.VoidParams(3, 5);
@@ -75,10 +87,8 @@ namespace Irradiate.Tests
         [Fact]
         public void CustomTypeFormatter_Exception()
         {
-            var r = new TestRecorder();
-            var i = Irradiate.ProxyInstance<IThing>(new Thing(), r,
-                        new Options()
-                            .AnnotateArgument("x")
+            var (r, i) = setup(new Options()
+                            .Annotate("x")
                             .AddTypeFormatter<int>(i => throw new NotImplementedException()));
 
             Assert.Throws<NotImplementedException>(() => i.VoidParams(3, 5));
@@ -90,9 +100,7 @@ namespace Irradiate.Tests
         [Fact]
         public void AnnotateIgnoresNull()
         {
-            var r = new TestRecorder();
-            var i = Irradiate.ProxyInstance<IThing>(new Thing(), r,
-                        new Options().AnnotateArgument("s"));
+            var (r, i) = setup(new Options().Annotate("s"));
 
             i.VoidParamsNullable(null);
 

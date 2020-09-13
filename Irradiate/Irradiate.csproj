@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>0.0.1</Version>
+    <Version>0.1.0</Version>
 
     <Authors>Martin Disibio</Authors>
     <Description>Irradiate is a library to easily add AWS X-Ray tracing to any .NET interface using DispatchProxy. Subsegments are captured at the method level and record arguments, return values, exceptions, and timings. Irradiate handles async methods and ends the subsegment when the task is complete.</Description>

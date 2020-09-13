@@ -8,6 +8,7 @@ namespace Irradiate
     public class Options
     {
         public HashSet<string> AnnotatedArgumentsByName { get; private set;} = new HashSet<string>();
+        public Dictionary<Type, Func<object, Tuple<object, string>>> AnnotatedArgumentsByType { get; private set; } = new Dictionary<Type, Func<object, Tuple<object, string>>>();
         public List<string> ExcludedMethodsByName { get; private set; } = new List<string>();
         public Dictionary<Type, Func<object, object>> TypeFormatters { get; private set; } = new Dictionary<Type, Func<object, object>>();
 
@@ -22,9 +23,15 @@ namespace Irradiate
             return this;
         }
 
-        public Options AnnotateArgument(string name)
+        public Options Annotate(string argumentName)
         {
-            AnnotatedArgumentsByName.Add(name);
+            AnnotatedArgumentsByName.Add(argumentName);
+            return this;
+        }
+
+        public Options Annotate<TIn>(Func<TIn, Tuple<object, string>> selector)
+        {
+            AnnotatedArgumentsByType[typeof(TIn)] = o => selector((TIn)o);
             return this;
         }
 

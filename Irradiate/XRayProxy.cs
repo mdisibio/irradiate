@@ -140,14 +140,23 @@ namespace Irradiate
         {
             for (int i = 0; i < args.Length; i++)
             {
-                var val = convertArg(args[i]);
+                var val = args[i];
+                var safe = convertArg(val);
                 var param = m.GetParameters()[i];
+                
+                _recorder.AddMetadata("args." + param.Name, safe);
 
-                _recorder.AddMetadata("args." + param.Name, val);
-
-                if (val != null && Options.AnnotatedArgumentsByName.Contains(param.Name))
+                if (safe != null && Options.AnnotatedArgumentsByName.Contains(param.Name))
                 {
-                    _recorder.AddAnnotation(param.Name, val);
+                    _recorder.AddAnnotation(param.Name, safe);
+                }
+
+                var t = param.ParameterType;
+                Func<object, Tuple<object, string>> selector;
+                if (Options.AnnotatedArgumentsByType.TryGetValue(param.ParameterType, out selector))
+                {
+                    var ann = selector(val);
+                    _recorder.AddAnnotation(ann.Item2, convertArg(ann.Item1));
                 }
             }
         }
