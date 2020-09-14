@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -7,6 +8,10 @@ using Amazon.XRay.Recorder.Core;
 
 namespace Irradiate
 {
+    using TypeAnnotater = Func<object, Tuple<object, string>>;
+    using TypeFormatter = Func<object, object>;
+    using ResultHandler = Func<object, object>;
+
     public class XrayProxy : DispatchProxy
     {
         object _instance;
@@ -17,7 +22,8 @@ namespace Irradiate
                                 .Where(m => m.Name == nameof(handleTaskT) && m.IsGenericMethod)
                                 .First();
 
-        readonly ConcurrentDictionary<Type, Func<object, object>> _handlerCache = new ConcurrentDictionary<Type, Func<object, object>>();
+        readonly ConcurrentDictionary<Type, ResultHandler> _handlerCache = new ConcurrentDictionary<Type, ResultHandler>();
+        readonly ConcurrentDictionary<Type, TypeAnnotater[]> _annotaterCache = new ConcurrentDictionary<Type, TypeAnnotater[]>();
 
         public void Init(object instance, IAWSXRayRecorder recorder, Options options)
         {
@@ -76,15 +82,15 @@ namespace Irradiate
         /// </summary>
         /// <param name="m"></param>
         /// <returns></returns>
-        Func<object, object> createResultHandler(Type returnType)
+        ResultHandler createResultHandler(Type returnType)
         {
             if (returnType.BaseType == typeof(Task) && returnType.IsGenericType)
             {
                 // Task<T>
                 // Create implementation of handleTask<T> for the
                 // inner return type. Then cast it to a Func.
-                return (Func<object, object>)
-                    Delegate.CreateDelegate(typeof(Func<object, object>), this,
+                return (ResultHandler)
+                    Delegate.CreateDelegate(typeof(ResultHandler), this,
                     _handleResultTaskT.MakeGenericMethod(returnType.GenericTypeArguments[0]));
             }
             else if (returnType == typeof(Task))
@@ -151,11 +157,9 @@ namespace Irradiate
                     _recorder.AddAnnotation(param.Name, safe);
                 }
 
-                var t = param.ParameterType;
-                Func<object, Tuple<object, string>> selector;
-                if (Options.AnnotatedArgumentsByType.TryGetValue(param.ParameterType, out selector))
+                foreach (var annotater in getAnnotaters(param.ParameterType))
                 {
-                    var ann = selector(val);
+                    var ann = annotater(val);
                     _recorder.AddAnnotation(ann.Item2, convertArg(ann.Item1));
                 }
             }
@@ -167,7 +171,7 @@ namespace Irradiate
                 return null;
 
             // Custom
-            Func<object, object> custom;
+            TypeFormatter custom;
             if (Options.TypeFormatters.TryGetValue(arg.GetType(), out custom))
             {
                 return custom(arg);
@@ -182,6 +186,22 @@ namespace Irradiate
 
             // Fallback
             return arg.ToString();
+        }
+
+        TypeAnnotater[] getAnnotaters(Type t)
+        {
+            return _annotaterCache.GetOrAdd(t, t =>
+            {
+                List<TypeAnnotater> f;
+                if (Options.AnnotatedArgumentsByType.TryGetValue(t, out f))
+                {
+                    return f.ToArray();
+                }
+                else
+                {
+                    return new TypeAnnotater[0];
+                }
+            });
         }
 
         void logException(Exception e)

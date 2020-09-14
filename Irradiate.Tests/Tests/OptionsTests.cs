@@ -69,6 +69,20 @@ namespace Irradiate.Tests
             Assert.Equal("STRING", r.Subsegments[0].Annotations["name"]);
         }
 
+        [Fact]
+        public void AnnotateArgumentsByTypeMultiple()
+        {
+            var (r, i) = setup(new Options()
+                            .Annotate<string>(s => Tuple.Create((object)(s + "1"), "1"))
+                            .Annotate<string>(s => Tuple.Create((object)(s + "2"), "2"))
+                            );
+
+            i.VoidParamsNullable("s");
+
+            Assert.Equal(2, r.Subsegments[0].Annotations.Keys.Count);
+            Assert.Equal("s1", r.Subsegments[0].Annotations["1"]);
+            Assert.Equal("s2", r.Subsegments[0].Annotations["2"]);
+        }
 
         [Fact]
         public void CustomTypeFormatter()
