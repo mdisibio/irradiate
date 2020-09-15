@@ -192,15 +192,17 @@ namespace Irradiate
         {
             return _annotaterCache.GetOrAdd(t, t =>
             {
-                List<TypeAnnotater> f;
-                if (Options.AnnotatedArgumentsByType.TryGetValue(t, out f))
+                var f = new List<TypeAnnotater>();
+
+                foreach (var kvp in Options.AnnotatedArgumentsByType)
                 {
-                    return f.ToArray();
+                    if (kvp.Key.IsAssignableFrom(t))
+                    {
+                        f.AddRange(kvp.Value);
+                    }
                 }
-                else
-                {
-                    return new TypeAnnotater[0];
-                }
+
+                return f.ToArray();
             });
         }
 

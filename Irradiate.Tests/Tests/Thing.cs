@@ -14,6 +14,8 @@ namespace Irradiate.Tests
         Task<int> FuncParamsAsync(int x, int y);
         Task<int> FuncParamsAsyncDelayed(int x, int y);
         void ThrowsException();
+        void A(A a);
+        void B(B b);
     }
 
     public class Thing : IThing
@@ -34,6 +36,18 @@ namespace Irradiate.Tests
             return x * y;
         }
         public void ThrowsException() => throw new NotImplementedException();
+        public void A(A a) { }
+        public void B(B b) { }
+    }
+
+    public class A
+    {
+        public int a;
+    }
+
+    public class B : A
+    {
+        public int b;
     }
 
 }

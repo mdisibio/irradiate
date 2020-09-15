@@ -85,6 +85,19 @@ namespace Irradiate.Tests
         }
 
         [Fact]
+        public void AnnotateArgumentsByTypeInheritance()
+        {
+            var (r, i) = setup(new Options()
+                            .Annotate<A>(a => Tuple.Create((object)a.a, "a"))
+                            );
+
+            i.B(new B { a = 5 });
+
+            Assert.Single(r.Subsegments[0].Annotations.Keys);
+            Assert.Equal(5, r.Subsegments[0].Annotations["a"]);
+        }
+
+        [Fact]
         public void CustomTypeFormatter()
         {
            var (r, i) = setup(new Options()
