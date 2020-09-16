@@ -96,7 +96,7 @@ namespace Irradiate
             else if (returnType == typeof(Task))
             {
                 // Task
-                return handleTaskVoid;
+                return handleTask;
             }
             else
             {
@@ -112,34 +112,50 @@ namespace Irradiate
             return res;
         }
 
-        object handleTaskVoid(object first)
+        object handleTask(object o)
         {
-            return ((Task)first).ContinueWith(t =>
+            var task = (Task)o;
+            if (task.IsCompleted)
             {
-                logTask(t);
+                handleCompletedTask(task);
+                return task;
+            }
+
+            return task.ContinueWith(t =>
+            {
+                handleCompletedTask(t);
                 _recorder.EndSubsegment();
             });
         }
 
-        object handleTaskT<T>(object first)
+        object handleTaskT<T>(object o)
         {
-            return ((Task<T>)first).ContinueWith(t =>
+            var task = (Task<T>)o;
+
+            if (task.IsCompleted)
             {
-                logTask(t);
-                _recorder.EndSubsegment();
+                handleCompletedTask(task);
+                return task;
+            }
+
+            return task.ContinueWith(t =>
+            {
+                handleCompletedTask(t);
                 return t.Result;
             });
         }
 
-        void logTask(Task t)
+        void handleCompletedTask(Task t)
         {
-            logException(t.Exception);           
+            logException(t.Exception);
+            _recorder.EndSubsegment();
         }
 
-        void logTask<T>(Task<T> t)
+        void handleCompletedTask<T>(Task<T> t)
         {
             logException(t.Exception);
             logResult(t.Result);
+            _recorder.EndSubsegment();
         }
 
         void logArgs(MethodInfo m, object[] args)
