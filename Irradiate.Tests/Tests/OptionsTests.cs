@@ -58,6 +58,18 @@ namespace Irradiate.Tests
         }
 
         [Fact]
+        public void AnnotateArgumentsByNameWithNameOverride()
+        {
+            var (r, i) = setup(new Options().Annotate("x", "customX"));
+
+            i.VoidParams(3, 5);
+
+            Assert.Single(r.Subsegments[0].Annotations.Keys);
+            Assert.Equal(3, r.Subsegments[0].Annotations["customX"]);
+        }
+
+
+        [Fact]
         public void AnnotateArgumentsByType()
         {
             var (r, i) = setup(new Options()

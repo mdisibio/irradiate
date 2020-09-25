@@ -168,9 +168,10 @@ namespace Irradiate
                 
                 _recorder.AddMetadata("args." + param.Name, safe);
 
-                if (safe != null && Options.AnnotatedArgumentsByName.Contains(param.Name))
+                AnnotatedArgumentByNameEntry annotateByName;
+                if (safe != null && Options.AnnotatedArgumentsByName.TryGetValue(param.Name, out annotateByName))
                 {
-                    _recorder.AddAnnotation(param.Name, safe);
+                    _recorder.AddAnnotation(annotateByName.AnnotationName ?? param.Name, safe);
                 }
 
                 foreach (var annotater in getAnnotaters(param.ParameterType))

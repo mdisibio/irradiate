@@ -8,9 +8,21 @@ namespace Irradiate
     using TypeAnnotater = Func<object, Tuple<object, string>>;
     using TypeFormatter = Func<object, object>;
 
+    public struct AnnotatedArgumentByNameEntry
+    {
+        public string AnnotationName;
+    }
+
+    public struct AnnotatedArgumentByTypeEntry
+    {
+        public string Name;
+        public string NewName;
+    }
+
+
     public class Options
     {
-        public HashSet<string> AnnotatedArgumentsByName { get; private set;} = new HashSet<string>();
+        public Dictionary<string, AnnotatedArgumentByNameEntry> AnnotatedArgumentsByName { get; private set;} = new Dictionary<string, AnnotatedArgumentByNameEntry > ();
         public Dictionary<Type, List<TypeAnnotater>> AnnotatedArgumentsByType { get; private set; } = new Dictionary<Type, List<TypeAnnotater>>();
         public List<string> ExcludedMethodsByName { get; private set; } = new List<string>();
         public Dictionary<Type, TypeFormatter> TypeFormatters { get; private set; } = new Dictionary<Type, TypeFormatter>();
@@ -26,9 +38,19 @@ namespace Irradiate
             return this;
         }
 
-        public Options Annotate(string argumentName)
+        /// <summary>
+        /// Create an annotation from any method argument matching the given name.
+        /// </summary>
+        /// <param name="argumentName">The name of the argument. Is case-sensitive.</param>
+        /// <param name="newName">Optional name for the annotation. If not specified then the argument name is used.</param>
+        /// <returns></returns>
+        public Options Annotate(string argumentName, string annotationName = null)
         {
-            AnnotatedArgumentsByName.Add(argumentName);
+            AnnotatedArgumentsByName[argumentName] = new AnnotatedArgumentByNameEntry
+            {
+                AnnotationName = annotationName,
+            };
+
             return this;
         }
 
